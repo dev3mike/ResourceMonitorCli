@@ -15,11 +15,11 @@ services:
       # Telegram configuration
       # If TELEGRAM_TOKEN is empty, runs in console mode
       # If TELEGRAM_TOKEN is set, requires CHAT_ID and optionally uses INTERVAL_MINUTES
-      - TELEGRAM_ARG=${TELEGRAM_TOKEN:+--telegram ${TELEGRAM_TOKEN}}
-      - CHAT_ARG=${TELEGRAM_TOKEN:+--chat ${CHAT_ID}}
-      - INTERVAL_ARG=${TELEGRAM_TOKEN:+--interval ${INTERVAL_MINUTES:-60}}
+      - TELEGRAM_ARG=${TELEGRAM_TOKEN:--t ${TELEGRAM_TOKEN}}
+      - CHAT_ARG=${TELEGRAM_TOKEN:--c ${CHAT_ID}}
+      - INTERVAL_ARG=${TELEGRAM_TOKEN:--i ${INTERVAL_MINUTES:-60}}
     # Pass command-line arguments conditionally based on mode
-    command: dotnet ResourceMonitorCli.dll ${TELEGRAM_ARG} ${CHAT_ARG} ${INTERVAL_ARG}
+    command: dotnet ResourceMonitorCli.dll $${TELEGRAM_ARG} $${CHAT_ARG} $${INTERVAL_ARG}
     deploy:
       resources:
         limits:
