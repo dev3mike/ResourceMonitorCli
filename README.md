@@ -61,6 +61,9 @@ Disk Usage:
 - Requires Telegram bot token and chat ID
 - Set custom update intervals
 
+Example output:
+![Telegram Mode](telegram-mode.png)
+
 ## ⚙️ Environment Variables
 
 | Variable | Description | Default | Required |
