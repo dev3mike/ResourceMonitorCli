@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   resource-monitor:
     build: .
@@ -13,13 +11,17 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       # Telegram configuration
-      # If TELEGRAM_TOKEN is empty, runs in console mode
-      # If TELEGRAM_TOKEN is set, requires CHAT_ID and optionally uses INTERVAL_MINUTES
-      - TELEGRAM_ARG=${TELEGRAM_TOKEN:--t ${TELEGRAM_TOKEN}}
-      - CHAT_ARG=${TELEGRAM_TOKEN:--c ${CHAT_ID}}
-      - INTERVAL_ARG=${TELEGRAM_TOKEN:--i ${INTERVAL_MINUTES:-60}}
-    # Pass command-line arguments conditionally based on mode
-    command: dotnet ResourceMonitorCli.dll $${TELEGRAM_ARG} $${CHAT_ARG} $${INTERVAL_ARG}
+      # Leave TELEGRAM_TOKEN empty for console mode
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - CHAT_ID=${CHAT_ID:-}
+      - INTERVAL_MINUTES=${INTERVAL_MINUTES:-60}
+    # Command line arguments for the application
+    command: >
+      sh -c ' if [ ! -z "$$TELEGRAM_TOKEN" ]; then
+        dotnet ResourceMonitorCli.dll -t "$$TELEGRAM_TOKEN" -c "$$CHAT_ID" -i "$$INTERVAL_MINUTES"
+      else
+        dotnet ResourceMonitorCli.dll
+      fi'
     deploy:
       resources:
         limits:
