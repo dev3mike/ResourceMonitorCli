@@ -23,9 +23,7 @@ services:
         echo 'Debug: Checking configuration mode...';
         if [ ! -z \"$$TELEGRAM_TOKEN\" ]; then
           echo 'Debug: Running in Telegram mode';
-          echo 'Debug: CHAT_ID is ' && if [ ! -z \"$$CHAT_ID\" ]; then echo 'set'; else echo 'not set'; fi;
-          echo 'Debug: INTERVAL_MINUTES=' && echo \"$$INTERVAL_MINUTES\";
-          dotnet ResourceMonitorCli.dll -t \"$$TELEGRAM_TOKEN\" -c \"$$CHAT_ID\" -i \"$$INTERVAL_MINUTES\";
+          dotnet ResourceMonitorCli.dll --telegram \"$$TELEGRAM_TOKEN\" --chat \"$$CHAT_ID\" --interval \"$$INTERVAL_MINUTES\";
         else
           echo 'Debug: Running in Console mode';
           dotnet ResourceMonitorCli.dll;
