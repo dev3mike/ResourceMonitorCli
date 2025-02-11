@@ -21,9 +21,9 @@ namespace ResourceMonitorCli
         {
             // If Telegram mode is enabled, start a background task to send messages.
             var telegramTask = Task.CompletedTask;
-            if (config.TelegramMode)
+            if (config.TelegramMode && !string.IsNullOrWhiteSpace(config.TelegramToken) && !string.IsNullOrWhiteSpace(config.ChatId))
             {
-                var telegramService = new TelegramService(config.TelegramToken, config.ChatId, metricsService);
+                var telegramService = new TelegramService(config.TelegramToken!, config.ChatId!, metricsService);
                 telegramTask = Task.Run(() => telegramService.StartSenderAsync(config.IntervalMinutes, cancellationTokenSource.Token),
                     cancellationTokenSource.Token);
             }

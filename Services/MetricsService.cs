@@ -122,8 +122,8 @@ namespace ResourceMonitorCli.Services
                 {
                     if (drive.IsReady && drive.DriveType == DriveType.Fixed)
                     {
-                        var total = drive.TotalSize;
-                        var free = drive.TotalFreeSpace;
+                        var total = (ulong)drive.TotalSize;
+                        var free = (ulong)drive.TotalFreeSpace;
                         var usedPercent = total > 0 ? (float)((double)(total - free) / total * 100) : 0;
                         metrics.DiskUsages.Add(new DiskUsage
                         {
@@ -318,26 +318,26 @@ namespace ResourceMonitorCli.Services
             try
             {
                 var lines = File.ReadAllLines("/proc/meminfo");
-                var memTotal = 0;
-                var memAvailable = 0;
+                var memTotal = 0UL;
+                var memAvailable = 0UL;
                 foreach (var line in lines)
                 {
                     if (line.StartsWith("MemTotal:"))
                     {
                         var parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (parts.Length >= 2)
-                            memTotal = (int)ulong.Parse(parts[1]); // in kB
+                            memTotal = ulong.Parse(parts[1]); // in kB
                     }
                     else if (line.StartsWith("MemAvailable:"))
                     {
                         var parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (parts.Length >= 2)
-                            memAvailable = (int)ulong.Parse(parts[1]); // in kB
+                            memAvailable = ulong.Parse(parts[1]); // in kB
                     }
                 }
                 if (memTotal == 0)
                     return 0;
-                var memUsed = (ulong)(memTotal - memAvailable);
+                var memUsed = memTotal - memAvailable;
                 return (float)memUsed / memTotal * 100;
             }
             catch (Exception ex)
@@ -378,7 +378,7 @@ namespace ResourceMonitorCli.Services
                 procVm?.WaitForExit();
 
                 // Determine the page size (defaulting to 4096 bytes if parsing fails).
-                var pageSize = 4096;
+                var pageSize = 4096UL;
                 var lines = vmOutput!.Split('\n');
                 foreach (var line in lines)
                 {
@@ -390,7 +390,7 @@ namespace ResourceMonitorCli.Services
                         {
                             var sizeStr = line.Substring(start, end - start).Trim();
                             if (ulong.TryParse(sizeStr, out ulong ps))
-                                pageSize = (int)ps;
+                                pageSize = ps;
                         }
                         break;
                     }
@@ -421,7 +421,7 @@ namespace ResourceMonitorCli.Services
                         }
                     }
                 }
-                var freeMemoryBytes = (freePages + speculativePages) * (ulong)pageSize;
+                var freeMemoryBytes = (freePages + speculativePages) * pageSize;
                 if (totalMemory == 0)
                     return 0;
                 var usedMemory = totalMemory - freeMemoryBytes;

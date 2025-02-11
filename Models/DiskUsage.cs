@@ -2,8 +2,8 @@ namespace ResourceMonitorCli.Models;
 
 public class DiskUsage
 {
-    public string Name { get; set; }
-    public long TotalSize { get; set; }
-    public long FreeSpace { get; set; }
+    public required string Name { get; set; }
     public float UsagePercentage { get; set; }
+    public ulong FreeSpace { get; set; }
+    public ulong TotalSize { get; set; }
 }
