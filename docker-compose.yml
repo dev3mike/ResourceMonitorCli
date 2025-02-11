@@ -19,16 +19,7 @@ services:
       - INTERVAL_MINUTES=${INTERVAL_MINUTES:-60}
     # Command line arguments for the application
     command: >
-      sh -c "
-        echo 'Debug: Checking configuration mode...';
-        if [ ! -z \"$$TELEGRAM_TOKEN\" ]; then
-          echo 'Debug: Running in Telegram mode';
-          dotnet ResourceMonitorCli.dll --telegram \"$$TELEGRAM_TOKEN\" --chat \"$$CHAT_ID\" --interval \"$$INTERVAL_MINUTES\";
-        else
-          echo 'Debug: Running in Console mode';
-          dotnet ResourceMonitorCli.dll;
-        fi
-      "
+      dotnet ResourceMonitorCli.dll ${TELEGRAM_TOKEN:+--telegram ${TELEGRAM_TOKEN}} ${TELEGRAM_TOKEN:+--chat ${CHAT_ID}} ${TELEGRAM_TOKEN:+--interval ${INTERVAL_MINUTES}}
     deploy:
       resources:
         limits:
