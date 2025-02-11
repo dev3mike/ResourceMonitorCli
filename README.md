@@ -61,8 +61,8 @@ Disk Usage:
 - Requires Telegram bot token and chat ID
 - Set custom update intervals
 
-Example output:
-<img src="telegram-mode.png" alt="Telegram Mode Example" style="max-width: 400px; width: 400px; height: auto;">
+Example output:<br />
+<img src="telegram-mode.png" alt="Telegram Mode Example" style="width: 250px; height: auto;">
 
 ## ⚙️ Environment Variables
 
