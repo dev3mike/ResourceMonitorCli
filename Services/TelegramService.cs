@@ -63,15 +63,33 @@ namespace ResourceMonitorCli.Services
         private string FormatMetricsForTelegram(SystemMetrics metrics)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("*Resource Monitor*");
-            sb.AppendLine($"_Timestamp:_ {metrics.Timestamp:O}");
-            sb.AppendLine($"*CPU Usage:* {metrics.CpuUsage:0.00}%");
-            sb.AppendLine($"*Memory Usage:* {metrics.MemoryUsage:0.00}%");
-            sb.AppendLine("*Disk Usage:*");
+            sb.AppendLine("🖥️ *Resource Monitor*");
+            sb.AppendLine($"🕒 _Timestamp:_ {metrics.Timestamp:O}");
+
+            // CPU Usage
+            var cpuEmoji = FormatUtils.GetResourceEmoji(metrics.CpuUsage);
+            var cpuBar = FormatUtils.GetProgressBar(metrics.CpuUsage);
+            sb.AppendLine($"\n⚡ *CPU Usage:*");
+            sb.AppendLine($"`{cpuBar}` {cpuEmoji} {metrics.CpuUsage:0.00}%");
+
+            // Memory Usage
+            var memEmoji = FormatUtils.GetResourceEmoji(metrics.MemoryUsage);
+            var memBar = FormatUtils.GetProgressBar(metrics.MemoryUsage);
+            sb.AppendLine($"\n💾 *Memory Usage:*");
+            sb.AppendLine($"`{memBar}` {memEmoji} {metrics.MemoryUsage:0.00}%");
+
+            // Disk Usage
+            sb.AppendLine($"\n💽 *Disk Usage:*");
             foreach (var disk in metrics.DiskUsages)
             {
-                sb.AppendLine($"- {disk.Name}: {disk.UsagePercentage:0.00}% used, Free: {FormatUtils.FormatBytes(disk.FreeSpace)} / Total: {FormatUtils.FormatBytes(disk.TotalSize)}");
+                var diskEmoji = FormatUtils.GetResourceEmoji(disk.UsagePercentage);
+                var diskBar = FormatUtils.GetProgressBar(disk.UsagePercentage);
+                var diskName = FormatUtils.FormatDiskName(disk.Name);
+                sb.AppendLine($"\n*{diskName}*");
+                sb.AppendLine($"`{diskBar}` {diskEmoji} {disk.UsagePercentage:0.00}%");
+                sb.AppendLine($"Free: {FormatUtils.FormatBytes(disk.FreeSpace)} / Total: {FormatUtils.FormatBytes(disk.TotalSize)}");
             }
+
             return sb.ToString();
         }
     }
