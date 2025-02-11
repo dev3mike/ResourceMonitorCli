@@ -15,4 +15,9 @@ RUN apt-get update && \
     sysstat \
     && rm -rf /var/lib/apt/lists/*
 
+# Default to console mode (no arguments)
+# Arguments can be overridden via docker-compose or docker run:
+# --telegram (-t): Telegram bot token
+# --chat (-c): Chat ID (required if using Telegram)
+# --interval (-i): Update interval in minutes (default: 60)
 ENTRYPOINT ["dotnet", "ResourceMonitorCli.dll"] 

@@ -12,11 +12,14 @@ services:
       - /sys:/host/sys:ro
     environment:
       - TZ=${TZ:-UTC}
-      - REFRESH_INTERVAL_SECONDS=${REFRESH_INTERVAL_SECONDS:-1}
-      # Telegram configuration (leave TELEGRAM_TOKEN empty for console mode)
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
-      - CHAT_ID=${CHAT_ID:-}
-      - INTERVAL_MINUTES=${INTERVAL_MINUTES:-60}
+      # Telegram configuration
+      # If TELEGRAM_TOKEN is empty, runs in console mode
+      # If TELEGRAM_TOKEN is set, requires CHAT_ID and optionally uses INTERVAL_MINUTES
+      - TELEGRAM_ARG=${TELEGRAM_TOKEN:+--telegram ${TELEGRAM_TOKEN}}
+      - CHAT_ARG=${TELEGRAM_TOKEN:+--chat ${CHAT_ID}}
+      - INTERVAL_ARG=${TELEGRAM_TOKEN:+--interval ${INTERVAL_MINUTES:-60}}
+    # Pass command-line arguments conditionally based on mode
+    command: dotnet ResourceMonitorCli.dll ${TELEGRAM_ARG} ${CHAT_ARG} ${INTERVAL_ARG}
     deploy:
       resources:
         limits:

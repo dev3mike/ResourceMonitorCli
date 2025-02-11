@@ -66,10 +66,38 @@ Disk Usage:
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | TZ | Timezone | UTC | No |
-| REFRESH_INTERVAL_SECONDS | Console refresh rate | 1 | No |
-| TELEGRAM_TOKEN | Telegram bot token | empty | Only for Telegram mode |
-| CHAT_ID | Telegram chat ID | empty | Only for Telegram mode |
-| INTERVAL_MINUTES | Telegram update interval | 60 | Only for Telegram mode |
+| TELEGRAM_TOKEN | Telegram bot token | empty | No |
+| CHAT_ID | Telegram chat ID | empty | Yes (if using Telegram) |
+| INTERVAL_MINUTES | Telegram update interval in minutes | 60 | No |
+
+### Command Line Arguments 🔧
+The application accepts the following command-line arguments, which are automatically set from environment variables in Docker:
+
+| Argument | Short | Description | Example |
+|----------|-------|-------------|---------|
+| --telegram | -t | Telegram bot token | -t your_bot_token |
+| --chat | -c | Telegram chat ID | -c your_chat_id |
+| --interval | -i | Update interval in minutes | -i 60 |
+
+### Mode Selection 🔄
+- Without `-t` argument: Console Mode (updates every second)
+- With `-t` argument: Telegram Mode (requires `-c` for chat ID)
+
+### Example Configurations
+
+1. **Console Mode** (default):
+```env
+TZ=UTC
+# No other variables needed
+```
+
+2. **Telegram Mode**:
+```env
+TZ=UTC
+TELEGRAM_TOKEN=your_bot_token
+CHAT_ID=your_chat_id
+INTERVAL_MINUTES=60  # optional
+```
 
 ## 📱 Setting Up Telegram Mode
 
@@ -135,4 +163,4 @@ MIT License - feel free to use and modify!
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. # ResourceMonitorCli
+Contributions are welcome! Please feel free to submit a Pull Request.
