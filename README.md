@@ -62,7 +62,7 @@ Disk Usage:
 - Set custom update intervals
 
 Example output:
-![Telegram Mode](telegram-mode.png)
+<img src="telegram-mode.png" alt="Telegram Mode" style="max-width: 400px; height: auto;">
 
 ## ⚙️ Environment Variables
 
