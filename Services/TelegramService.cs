@@ -8,6 +8,7 @@ namespace ResourceMonitorCli.Services
     public class TelegramService(string token, string chatId, MetricsService metricsService)
     {
         private readonly HttpClient _httpClient = new();
+        private long? _lastMessageId;
 
         public async Task StartSenderAsync(int intervalMinutes, CancellationToken cancellationToken)
         {
@@ -35,10 +36,48 @@ namespace ResourceMonitorCli.Services
             }
         }
 
+        private async Task DeleteLastMessageAsync(CancellationToken cancellationToken)
+        {
+            if (_lastMessageId == null) return;
+
+            try
+            {
+                string url = $"https://api.telegram.org/bot{token}/deleteMessage";
+                var payload = new
+                {
+                    chat_id = chatId,
+                    message_id = _lastMessageId
+                };
+
+                string jsonPayload = JsonSerializer.Serialize(payload);
+                using var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
+
+                // Don't throw if deletion fails, just log the error
+                if (!response.IsSuccessStatusCode)
+                {
+                    await Console.Error.WriteLineAsync($"Failed to delete message {_lastMessageId}: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't throw - we still want to send the new message
+                await Console.Error.WriteLineAsync($"Error deleting last message: {ex.Message}");
+            }
+            finally
+            {
+                _lastMessageId = null;
+            }
+        }
+
         private async Task SendMessageAsync(string messageText, CancellationToken cancellationToken)
         {
             try
             {
+                // Try to delete the last message first
+                await DeleteLastMessageAsync(cancellationToken);
+
                 string url = $"https://api.telegram.org/bot{token}/sendMessage";
                 var payload = new
                 {
@@ -52,6 +91,16 @@ namespace ResourceMonitorCli.Services
 
                 HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
                 response.EnsureSuccessStatusCode();
+
+                // Parse the response to get the message ID
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                var responseObj = JsonSerializer.Deserialize<JsonElement>(responseContent);
+
+                if (responseObj.TryGetProperty("result", out var result) &&
+                    result.TryGetProperty("message_id", out var messageId))
+                {
+                    _lastMessageId = messageId.GetInt64();
+                }
             }
             catch (Exception ex)
             {
