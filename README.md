@@ -71,7 +71,7 @@ Example output:<br />
 | TZ | Timezone | UTC | No |
 | TELEGRAM_TOKEN | Telegram bot token | empty | No |
 | CHAT_ID | Telegram chat ID | empty | Yes (if using Telegram) |
-| INTERVAL_MINUTES | Telegram update interval in minutes | 60 | No |
+| INTERVAL_MINUTES | Telegram update interval in minutes | 5 | No |
 
 ### Command Line Arguments 🔧
 The application accepts the following command-line arguments, which are automatically set from environment variables in Docker:
@@ -99,7 +99,7 @@ TZ=UTC
 TZ=UTC
 TELEGRAM_TOKEN=your_bot_token
 CHAT_ID=your_chat_id
-INTERVAL_MINUTES=60  # optional
+INTERVAL_MINUTES=5  # optional
 ```
 
 ## 📱 Setting Up Telegram Mode
@@ -110,7 +110,7 @@ INTERVAL_MINUTES=60  # optional
 ```env
 TELEGRAM_TOKEN=your_bot_token
 CHAT_ID=your_chat_id
-INTERVAL_MINUTES=60
+INTERVAL_MINUTES=5
 ```
 
 ## 🐳 Docker Deployment

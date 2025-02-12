@@ -16,7 +16,7 @@ services:
       # Leave TELEGRAM_TOKEN empty for console mode
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
       - CHAT_ID=${CHAT_ID:-}
-      - INTERVAL_MINUTES=${INTERVAL_MINUTES:-60}
+      - INTERVAL_MINUTES=${INTERVAL_MINUTES:-5}
     # Command line arguments for the application
     command: >
       dotnet ResourceMonitorCli.dll ${TELEGRAM_TOKEN:+--telegram ${TELEGRAM_TOKEN}} ${TELEGRAM_TOKEN:+--chat ${CHAT_ID}} ${TELEGRAM_TOKEN:+--interval ${INTERVAL_MINUTES}}
